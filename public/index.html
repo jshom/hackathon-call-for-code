@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>Broken Building Monitor</title>
+  <link href="https://fonts.googleapis.com/css?family=IBM+Plex+Sans" rel="stylesheet">
+  <link rel="stylesheet" href="/css/styles.css">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+  <style>
+    /* Always set the map height explicitly to define the size of the div
+     * element that contains the map. */
+    #map {
+      /* height: 200px; */
+      height: 400px;
+      width: 100%;
+      /* overflow: visible !important; */
+      /* position: absolute !important; */
+      /* bottom: 50px; */
+      /* z-index: 999999; */
+      /* right: 10px; */
+      /* top: 10px; */
+      margin-bottom: 100px;
+    }
+  </style>
+</head>
+
+<body ng-app="monitor" ng-cloak>
+  <div class="images" ng-controller='monitorCtrl'>
+
+    <div class="container-fluid">
+      <a href="/input.html">input</a>
+      <h1 class="text-center"><b>Damage</b> Monitor.</h1>
+
+      <div class="col-sm-6">
+        <h2 class="text-center">Standing Buildings</h2>
+        <div ng-repeat='building in buildings | filter:classification="Good Building"' class="col-sm-4">
+
+          <div class="building">
+            <img ng-src="{{building.img_url}}" alt="building">
+            <b>Taken:</b> {{building.time}}
+            <b>Latitude:</b> {{building.latitude}}<br>
+            <b>Longtitude:</b> {{building.longitude}}<br>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="col-sm-6">
+        <h2 class="text-center">Damaged Buildings</h2>
+
+        <div ng-repeat='building in buildings | filter:classification="Broken Building"' class="col-sm-4">
+
+          <div class="building">
+            <img ng-src="{{building.img_url}}" alt="building" height="120px">
+            <b>Taken:</b> {{building.time}}
+            <b>Latitude:</b> {{building.latitude}}<br>
+            <b>Longtitude:</b> {{building.longitude}}<br>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+    <div class="container">
+      <hr>
+      <h2 class="text-center">Broken Buildings Map</h2>
+      <div class="col-md-12">
+        <div id="map"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- js includes -->
+  <script>
+  var map;
+  function initMap() {
+    map = new google.maps.Map(document.getElementById('map'), {
+      center: {lat: 42.7323, lng: -73.6},
+      zoom: 13
+    });
+  }
+  </script>
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAXppjmEVSGTtJTSawRvOq0HBpKvVOrTcM&callback=initMap" async defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.17.0/moment.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular-sanitize.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/ngInfiniteScroll/1.3.0/ng-infinite-scroll.min.js" charset="utf-8"></script>
+  <script src="/js/index.js"></script>
+  <script>
+    $(document).ready(function() {
+      $("body").tooltip({ selector: '[data-toggle=tooltip]' });
+    });
+  </script>
+</body>
+
+</html>

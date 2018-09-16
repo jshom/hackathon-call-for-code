@@ -1,0 +1,10 @@
+{
+  "production": {
+    "username": "xx",
+    "password": "xx",
+    "database": "xx",
+    "host": "xx",
+    "dialect": "mysql",
+    "port": "xx"
+  }
+}

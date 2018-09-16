@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Monitor - Input (Drone-like)</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+</head>
+<body style="overflow: hidden; background: #000;">
+  <input type="file" accept="image/*" id="file-input">
+  <video id="video" width="640" height="480" autoplay style="margin: 0 auto; width: 100%; height: calc(100vh - 100px); "></video>
+  <button id="snap" class="button btn-lg btn btn-success" style="height: 100%; width: 100%; margin: none;">Take Photo & Classify</button>
+  <canvas id="canvas" width="640" height="480" style='hidden: true;'></canvas>
+  <script>
+    const fileInput = document.getElementById('file-input');
+
+    fileInput.addEventListener('change', (e) => {
+
+      let formData = new FormData()
+
+      if (!latitude || !longitude) return getLocation()
+
+      formData.append('building_img', e.target.files[0]);
+      formData.append('latitude', latitude)
+      formData.append('longitude', longitude)
+
+      console.log(formData);
+
+      var request = new XMLHttpRequest();
+
+      request.open("POST", "/image/check");
+      request.send(formData);
+
+      // $.ajax({
+      //   type: 'POST',
+      //   // cache: false,
+      //   contentType: 'multipart/form-data',
+      //   // processData: false,
+      //   url: '/image/check',
+      //   data: formData,
+      //   success: function(data) { console.log(data) }
+      // })
+  })
+  </script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+  <script type="text/javascript">
+  if(navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+      // Not adding `{ audio: true }` since we only want video now
+      navigator.mediaDevices.getUserMedia({ video: true }).then(function(stream) {
+          video.src = window.URL.createObjectURL(stream);
+          video.play();
+      });
+  }
+
+  var latitude
+  var longitude;
+
+  const getLocation = () => {
+    var geoSuccess = function(position) {
+      latitude = position.coords.latitude;
+      longitude = position.coords.longitude;
+    };
+    navigator.geolocation.getCurrentPosition(geoSuccess);
+  }
+
+  window.onload = getLocation;
+
+
+  var canvas = document.getElementById('canvas');
+  var context = canvas.getContext('2d');
+  var video = document.getElementById('video');
+
+  // Trigger photo take
+  document.getElementById("snap").addEventListener("click", function() {
+    // :: show the img
+    context.drawImage(video, 0, 0, 640, 480);
+
+    let formData = new FormData()
+
+    canvas.toBlob(blob => {
+
+      if (!latitude || !longitude) return getLocation()
+
+      formData.append('building_img', blob);
+      formData.append('latitude', latitude)
+      formData.append('longitude', longitude)
+
+      console.log(formData);
+
+      var request = new XMLHttpRequest();
+
+      request.open("POST", "/image/check");
+      request.send(formData);
+
+      // $.ajax({
+      //   type: 'POST',
+      //   // cache: false,
+      //   contentType: 'multipart/form-data',
+      //   // processData: false,
+      //   url: '/image/check',
+      //   data: formData,
+      //   success: function(data) { console.log(data) }
+      // })
+    }, 'image/jpeg', 0.90)
+
+  });
+  </script>
+</body>
+</html>
